@@ -1,0 +1,98 @@
+
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = "us.hexcoder"
+archivesBaseName = "gradle-twirl"
+version = "1.0.0-SNAPSHOT"
+
+idea {
+	project {
+		jdkName = '1.8'
+		languageLevel = '1.8'
+	}
+
+	module {
+		downloadSources = true
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile gradleApi()
+	compile localGroovy()
+
+	compile "org.scala-lang:scala-library:2.11.2"
+	compile "com.typesafe.play:twirl-compiler_2.11:1.0.2"
+	compile "com.typesafe.play:twirl-api_2.11:1.0.2"
+	compile "org.apache.maven:maven-ant-tasks:2.1.3"
+}
+
+// Sonatype Publishing Configurations
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	classifier = "javadoc"
+	from "build/docs/javadoc"
+}
+
+task sourcesJar(type: Jar) {
+	from sourceSets.main.allSource
+	classifier = "sources"
+}
+
+artifacts {
+	archives jar
+	archives javadocJar
+	archives sourcesJar
+}
+
+signing {
+	sign configurations.archives
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				authentication(userName: sonatypeUsername, password: sonatypePassword)
+			}
+
+			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+				authentication(userName: sonatypeUsername, password: sonatypePassword)
+			}
+
+			pom.project {
+				name "gradle-twirl"
+				packaging "jar"
+				description "A Gradle plugin for compiling Twirl templates."
+				url "https://github.com/67726e/gradle-twirl"
+
+				scm {
+					url 'scm:git@github.com:67726e/gradle-twirl.git'
+					connection 'scm:git@github.com:67726e/gradle-twirl.git'
+					developerConnection 'scm:git@github.com:67726e/gradle-twirl.git'
+				}
+
+				licenses {
+					license {
+						name "The MIT License (MIT)"
+						url "http://opensource.org/licenses/MIT"
+					}
+				}
+
+				developers {
+					developer {
+						name "Glenn Nelson"
+						email "glenn@hexcoder.us"
+					}
+				}
+			}
+		}
+	}
+}
