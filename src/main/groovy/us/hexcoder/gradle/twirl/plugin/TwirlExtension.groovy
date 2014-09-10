@@ -1,7 +1,4 @@
 package us.hexcoder.gradle.twirl.plugin
-
-import java.nio.charset.Charset
-
 /**
  * @author 67726e
  *
@@ -12,16 +9,16 @@ class TwirlExtension {
 	String testSourceDirectory = "src/test/twirl"
 	String targetDirectory = "build/generated-sources/main/twirl"
 	String testTargetDirectory = "build/generated-sources/test/twirl"
-	Set<String> imports = new HashSet<>()
-	Charset charset = Charset.forName("UTF8")
+	Set<String> imports = new HashSet<>() // TODO: Change this be empty and merge with a default import configuration
+	String charset = "UTF8"
 
 	public TwirlExtension() {
 		// Default imports from Twirl-Maven
 		// See: https://github.com/JakeWharton/twirl-maven-plugin/blob/d58dc907b33f0088f4e827899ad078ce706840b9/twirl-maven-plugin/src/main/java/com/jakewharton/twirl/CompileMojo.java#L37
 		imports.addAll(
-				"import java.lang._",
-				"import java.util._",
-				"import scala.collection.JavaConversions._",
-				"import scala.collection.JavaConverters._")
+				"java.lang._",
+				"java.util._",
+				"scala.collection.JavaConversions._",
+				"scala.collection.JavaConverters._")
 	}
 }

@@ -26,7 +26,7 @@ abstract class AbstractCompileTask extends DefaultTask {
 	def compile(String sourceDirectory, String targetDirectory) {
 		File source = new File(sourceDirectory)
 		File target = new File(targetDirectory)
-		String imports = project.twirl.imports.join("\r\n")
+		String imports = project.twirl.imports.join("\r\n").replaceAll("(.+)", "import \$1")
 		Codec codec = new Codec(Charset.forName((String)project.twirl.charset))
 
 		final List<String> templates = findTemplates(sourceDirectory)
