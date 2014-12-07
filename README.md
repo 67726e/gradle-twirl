@@ -7,7 +7,10 @@ To use the Gradle plugin, just add the following to your `build.gradle` file.
 ```groovy
 buildscript {
   repositories {
-    mavenCentral()
+    	mavenCentral()
+	maven {
+		url "http://oss.sonatype.org/content/repositories/snapshots/"
+	}
   }
   dependencies {
     classpath "us.hexcoder:gradle-twirl:1.0.0-SNAPSHOT"
