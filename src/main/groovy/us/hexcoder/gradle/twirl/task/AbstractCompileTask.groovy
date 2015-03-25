@@ -40,15 +40,7 @@ abstract class AbstractCompileTask extends DefaultTask {
 	}
 
 	def findTemplates(String sourceDirectory) {
-		DirectoryScanner scanner = new DirectoryScanner()
-
-		scanner.setBasedir(getProject().projectDir)
-		scanner.setIncludes(sourceDirectory + "/**/*.scala.*")
-		// TODO: Set excluded files - scanner.setExcludes()
-		scanner.addDefaultExcludes()
-		scanner.scan()
-
-		return Arrays.asList(scanner.getIncludedFiles())
+        	return new FileNameFinder().getFileNames(sourceDirectory, '**/*.scala.*')
 	}
 
 	private static String extensionOf(File file) {
