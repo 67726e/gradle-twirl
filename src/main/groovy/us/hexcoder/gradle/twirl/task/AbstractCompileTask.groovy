@@ -1,5 +1,5 @@
 package us.hexcoder.gradle.twirl.task
-import org.apache.maven.artifact.ant.shaded.DirectoryScanner
+
 import org.gradle.api.DefaultTask
 import play.twirl.api.HtmlFormat
 import play.twirl.api.JavaScriptFormat
@@ -24,12 +24,12 @@ abstract class AbstractCompileTask extends DefaultTask {
 	}
 
 	def compile(String sourceDirectory, String targetDirectory) {
-		File source = new File(sourceDirectory)
-		File target = new File(targetDirectory)
+		File source = new File(getProject().projectDir, sourceDirectory)
+		File target = new File(getProject().projectDir, targetDirectory)
 		String imports = project.twirl.imports.join("\r\n").replaceAll("(.+)", "import \$1")
 		Codec codec = new Codec(Charset.forName((String)project.twirl.charset))
 
-		final List<String> templates = findTemplates(sourceDirectory)
+		final List<String> templates = findTemplates(source)
 
 		for (String templatePath : templates) {
 			final File templateFile = new File(templatePath)
@@ -39,8 +39,8 @@ abstract class AbstractCompileTask extends DefaultTask {
 		}
 	}
 
-	def findTemplates(String sourceDirectory) {
-        	return new FileNameFinder().getFileNames(sourceDirectory, '**/*.scala.*')
+	private static def findTemplates(File sourceDirectory) {
+        	return new FileNameFinder().getFileNames(sourceDirectory.absolutePath, '**/*.scala.*')
 	}
 
 	private static String extensionOf(File file) {
